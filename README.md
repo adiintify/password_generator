@@ -1,3 +1,3 @@
-# password_generator
+# Password Generator
 
-Visit https://www.adityanama.com to see this working. 
+Visit https://www.adityanama.com to see this working.

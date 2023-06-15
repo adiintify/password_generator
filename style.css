@@ -1,26 +1,37 @@
-@import url("https://fonts.googleapis.com/css?family=Press Start 2P&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap");
+
+:root {
+  --main-color: #0f0;
+  --main-font: "Press Start 2P", monospace;
+}
 
 body {
-  background-image: linear-gradient(black, green, black);
+  background-color: #000;
+  color: var(--main-color);
+  font-family: var(--main-font);
   margin: 0;
-  color: white;
-  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: "Press Start 2P", sans-serif;
+  min-height: 100vh;
 }
 
 .container {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  background-color: black;
+  align-items: center;
+  background-color: #111;
   padding: 3rem;
   border-radius: 1rem;
-  color: white;
-  box-shadow: 1px 1px 2px black, 0 0 25px green, 0 0 25px green;
+  box-shadow: 0 0 10px var(--main-color);
+}
+
+.title {
+  margin: 0;
+  text-align: center;
+  font-size: 2rem;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px var(--main-color);
 }
 
 .form {
@@ -28,26 +39,8 @@ body {
   grid-template-columns: auto auto;
   row-gap: 1rem;
   column-gap: 3rem;
-  justify-content: center;
-  align-items: center;
-}
-
-.title {
-  margin: 0;
-  text-align: center;
-  animation: animate 0.5s linear infinite;
-}
-
-@keyframes animate {
-  0% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
+  margin-top: 2rem;
+  width: 100%;
 }
 
 label {
@@ -56,39 +49,127 @@ label {
 
 .character-amount-container {
   display: flex;
-  align-items: center;
 }
 
 .number-input {
   width: 2.5rem;
-  font-family: inherit;
-  text-align: center;
 }
 
 .password-display {
-  background-color: green;
-  color: black;
+  background-color: #000;
+  color: var(--main-color);
   padding: 1rem;
-  height: 2rem;
-  width: 500px;
+  height: auto; /* changed from fixed height */
+  width: calc(100% - (1rem * 2)); /* subtracted padding from width */
+
+  /* added overflow-wrap property */
+  overflow-wrap: anywhere;
   display: flex;
   justify-content: center;
   align-items: center;
-  word-break: break-all;
-  border-radius: 1rem;
+  word-break: normal;
+  border-radius: 0.5rem;
+  font-size: 0.8rem; /* changed from fixed font size */
+  letter-spacing: 0.5px; /* changed from fixed letter spacing */
+  text-shadow: 0.5px 0.5px var(--main-color); /* changed from fixed text shadow */
+
+  /* added position relative for pseudo-element */
+  position: relative;
+}
+
+/* added pseudo-element for copy button */
+.password-display::after {
+  content: "Copy";
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: auto;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  background-color: #000;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+/* added hover effect for copy button */
+.password-display:hover::after {
+  background-color: #fff;
+  color: #000;
 }
 
 .btn {
-  grid-column: span 2;
-  background-color: transparent;
-  border: 2px solid white;
-  color: green;
-  padding: 0.5rem 1rem;
+  /* added variables for colors and fonts */
+  background-color: #000;
+  border: 0.1rem solid var(--main-color);
+  color: var(--main-color);
+  padding: 0.5rem 0.75rem;
   cursor: pointer;
-  font-family: inherit;
-  border-radius: 0.5rem;
+  font-family: var(--main-font);
+  font-size: 0.75rem; /* changed from fixed font size */
+  border-radius: 0.25rem; /* changed from fixed border radius */
+  text-transform: none; /* removed uppercase transformation */
+  letter-spacing: normal; /* removed letter spacing */
+  text-shadow: 0.25px 0.25px var(--main-color); /* changed from fixed text shadow */
+  transition: 0.3s ease;
+  grid-column: 1 / -1;
+  margin: 0 auto;
 }
 
 .btn:hover {
-  background-color: #ffffff33;
+  /* added hover effect for button */
+  background-color: #fff;
+  color: #000;
+}
+
+@media only screen and (max-width: 768px) {
+  .container {
+    padding: 2rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .form {
+    grid-template-columns: 1fr;
+  }
+
+  .btn {
+    grid-column: 1 / -1;
+  }
+
+  /* added media query for password display font size */
+  .password-display {
+    font-size: 0.6rem;
+  }
+}
+
+@keyframes blinking {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.blink {
+  animation: blinking 1s infinite;
+}
+
+/* added hover effects for checkboxes and range input */
+input[type="checkbox"]:hover,
+input[type="range"]:hover {
+  border-color: var(--main-color);
+}
+
+input[type="checkbox"]:checked {
+  background-color: var(--main-color);
 }

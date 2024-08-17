@@ -1,157 +1,140 @@
-// get the password display element
-const passwordDisplay = document.getElementById("passwordDisplay");
+// Function to generate and display a password
+function generateAndDisplayPassword(event) {
+  if (event) event.preventDefault(); // Prevent the form from submitting
 
-// add a click event listener to the password display element
-passwordDisplay.addEventListener("click", function () {
-  // get the password text
-  const password = passwordDisplay.textContent;
+  let characterAmount = document.getElementById("characterAmountNumber").value;
+  const customCharacterSet =
+    document.getElementById("customCharacterSet").value;
 
-  // copy the password to the clipboard using the navigator.clipboard API
-  navigator.clipboard
-    .writeText(password)
-    .then(() => {
-      // show a success message
-      alert("Password copied to clipboard!");
-    })
-    .catch(() => {
-      // show an error message
-      alert("Failed to copy password!");
-    });
-});
+  let includeUppercase = document.getElementById("includeUppercase").checked;
+  let includeLowercase = document.getElementById("includeLowercase").checked;
+  let includeNumbers = document.getElementById("includeNumbers").checked;
+  let includeSymbols = document.getElementById("includeSymbols").checked;
+  let includeSpaces = document.getElementById("includeSpaces").checked;
+  let excludeSimilarCharacters = document.getElementById(
+    "excludeSimilarCharacters"
+  ).checked;
+  let excludeAmbiguousCharacters = document.getElementById(
+    "excludeAmbiguousCharacters"
+  ).checked;
+  let includeLeetSpeak = document.getElementById("includeLeetSpeak").checked;
+  const randomizeLength = document.getElementById("randomizeLength").checked;
+  const camelCase = document.getElementById("camelCase").checked;
+  const kebabCase = document.getElementById("kebabCase").checked;
 
-// get the other elements from the HTML file
-const characterAmountRange = document.getElementById("characterAmountRange");
-const characterAmountNumber = document.getElementById("characterAmountNumber");
-const includeUppercaseElement = document.getElementById("includeUppercase");
-const includeLowercaseElement = document.getElementById("includeLowercase");
-const includeNumbersElement = document.getElementById("includeNumbers");
-const includeSymbolsElement = document.getElementById("includeSymbols");
-const excludeSimilarCharactersElement = document.getElementById(
-  "excludeSimilarCharacters"
-);
-const excludeAmbiguousCharactersElement = document.getElementById(
-  "excludeAmbiguousCharacters"
-);
-const form = document.getElementById("passwordGeneratorForm");
+  // Uncheck and disable other options if custom character set is provided
+  if (customCharacterSet && customCharacterSet.length > 0) {
+    includeUppercase =
+      includeLowercase =
+      includeNumbers =
+      includeSymbols =
+      includeSpaces =
+      excludeSimilarCharacters =
+      excludeAmbiguousCharacters =
+      includeLeetSpeak =
+        false;
 
-// define the character codes for each type of character
-const UPPERCASE_CHAR_CODES = arrayFromLowToHigh(65, 90);
-const LOWERCASE_CHAR_CODES = arrayFromLowToHigh(97, 122);
-const NUMBER_CHAR_CODES = arrayFromLowToHigh(48, 57);
-const SYMBOL_CHAR_CODES = arrayFromLowToHigh(33, 47)
-  .concat(arrayFromLowToHigh(58, 64))
-  .concat(arrayFromLowToHigh(91, 96))
-  .concat(arrayFromLowToHigh(123, 126));
+    document.getElementById("includeUppercase").checked = false;
+    document.getElementById("includeLowercase").checked = false;
+    document.getElementById("includeNumbers").checked = false;
+    document.getElementById("includeSymbols").checked = false;
+    document.getElementById("includeSpaces").checked = false;
+    document.getElementById("excludeSimilarCharacters").checked = false;
+    document.getElementById("excludeAmbiguousCharacters").checked = false;
+    document.getElementById("includeLeetSpeak").checked = false;
+  }
 
-// sync the character amount range and number inputs
-characterAmountNumber.addEventListener("input", syncCharacterAmount);
-characterAmountRange.addEventListener("input", syncCharacterAmount);
+  if (randomizeLength) {
+    characterAmount = Math.floor(Math.random() * (50 - 10 + 1)) + 10; // Random length between 10 and 50
+  }
 
-// add a submit event listener to the form element
-form.addEventListener("submit", (e) => {
-  // prevent the default behavior of the form
-  e.preventDefault();
-
-  // get the values of the inputs and checkboxes
-  const characterAmount = characterAmountNumber.value;
-  const includeUppercase = includeUppercaseElement.checked;
-  const includeLowercase = includeLowercaseElement.checked;
-  const includeNumbers = includeNumbersElement.checked;
-  const includeSymbols = includeSymbolsElement.checked;
-  const excludeSimilarCharacters = excludeSimilarCharactersElement.checked;
-  const excludeAmbiguousCharacters = excludeAmbiguousCharactersElement.checked;
-
-  // generate a password based on the user's preferences
   const password = generatePassword(
     characterAmount,
     includeUppercase,
     includeLowercase,
     includeNumbers,
     includeSymbols,
+    includeSpaces,
     excludeSimilarCharacters,
-    excludeAmbiguousCharacters
+    excludeAmbiguousCharacters,
+    includeLeetSpeak,
+    customCharacterSet
   );
 
-  // display the password in the password display element
-  passwordDisplay.innerText = password;
-});
+  let formattedPassword = formatPassword(password, camelCase, kebabCase);
 
-// define a function to generate a password
+  document.getElementById("passwordDisplay").innerText = formattedPassword;
+}
+
+// Function to generate a password
 function generatePassword(
   characterAmount,
   includeUppercase,
   includeLowercase,
   includeNumbers,
   includeSymbols,
+  includeSpaces,
   excludeSimilarCharacters,
-  excludeAmbiguousCharacters
+  excludeAmbiguousCharacters,
+  includeLeetSpeak,
+  customCharacterSet
 ) {
-  // initialize an empty array for the character codes
-  let charCodes = [];
+  let charset = "";
 
-  // add the character codes for each type of character if selected by the user
-  if (includeUppercase) {
-    charCodes = charCodes.concat(UPPERCASE_CHAR_CODES);
+  // Use custom character set if provided, otherwise build the charset based on options
+  if (customCharacterSet && customCharacterSet.length > 0) {
+    charset = customCharacterSet;
+  } else {
+    if (includeUppercase) charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    if (includeLowercase) charset += "abcdefghijklmnopqrstuvwxyz";
+    if (includeNumbers) charset += "0123456789";
+    if (includeSymbols) charset += "!@#$%^&*()_+~`|}{[]\\:;?><,./-=";
+    if (includeSpaces) charset += " ";
   }
 
-  if (includeLowercase) {
-    charCodes = charCodes.concat(LOWERCASE_CHAR_CODES);
-  }
-
-  if (includeNumbers) {
-    charCodes = charCodes.concat(NUMBER_CHAR_CODES);
-  }
-
-  if (includeSymbols) {
-    charCodes = charCodes.concat(SYMBOL_CHAR_CODES);
-  }
-
-  // exclude some characters if selected by the user
-  if (excludeSimilarCharacters) {
-    charCodes = excludeCharacters(charCodes, ["i", "l", "1", "I"]);
-  }
-
-  if (excludeAmbiguousCharacters) {
-    charCodes = excludeCharacters(charCodes, ["{", "}", "[", "]"]);
-  }
-
-  // initialize an empty array for the password characters
-  const passwordCharacters = [];
-
-  // loop through the character amount and pick a random character code from the charCodes array
+  let password = "";
   for (let i = 0; i < characterAmount; i++) {
-    const characterCode =
-      charCodes[Math.floor(Math.random() * charCodes.length)];
-
-    // convert the character code to a string and push it to the password characters array
-    passwordCharacters.push(String.fromCharCode(characterCode));
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset[randomIndex];
   }
 
-  // join the password characters array into a string and return it as the password
-  return passwordCharacters.join("");
+  return password;
 }
 
-// define a function to exclude some characters from the charCodes array
-function excludeCharacters(charCodes, excludedCharacters) {
-  // filter the charCodes array and return only the ones that are not in the excludedCharacters array
-  return charCodes.filter((charCode) => {
-    const character = String.fromCharCode(charCode);
-    return !excludedCharacters.includes(character);
+// Function to format the password
+function formatPassword(password, camelCase, kebabCase) {
+  if (camelCase) {
+    return password
+      .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+        return index === 0 ? word.toLowerCase() : word.toUpperCase();
+      })
+      .replace(/\s+/g, "");
+  } else if (kebabCase) {
+    return password.replace(/\s+/g, "-").toLowerCase();
+  } else {
+    return password;
+  }
+}
+
+// Automatically generate and display a password when the page loads
+window.onload = generateAndDisplayPassword;
+
+// Ensure password is copied to the clipboard when clicking on the password display
+document
+  .getElementById("passwordDisplay")
+  .addEventListener("click", function () {
+    const password = document.getElementById("passwordDisplay").textContent;
+    navigator.clipboard
+      .writeText(password)
+      .then(() => {
+        alert("Password copied to clipboard!");
+      })
+      .catch(() => {
+        alert("Failed to copy password!");
+      });
   });
-}
 
-// define a function to create an array of numbers from a low to a high value
-function arrayFromLowToHigh(low, high) {
-  const array = [];
-  for (let i = low; i <= high; i++) {
-    array.push(i);
-  }
-  return array;
-}
-
-// define a function to sync the character amount range and number inputs
-function syncCharacterAmount(e) {
-  const value = e.target.value;
-  characterAmountNumber.value = value;
-  characterAmountRange.value = value;
-}
+// Add event listener to the form to prevent default submit behavior
+document
+  .getElementById("passwordGeneratorForm")
+  .addEventListener("submit", generateAndDisplayPassword);

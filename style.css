@@ -21,13 +21,16 @@ body {
   flex-direction: column;
   align-items: center;
   background-color: #111;
-  padding: 3rem;
+  padding: 2rem;
   border-radius: 1rem;
   box-shadow: 0 0 10px var(--main-color);
+  max-width: 1000px;
+  width: 100%;
+  margin: 1rem;
 }
 
 .title {
-  margin: 0;
+  margin: 0 0 1.5rem 0;
   text-align: center;
   font-size: 2rem;
   letter-spacing: 2px;
@@ -35,56 +38,67 @@ body {
 }
 
 .form {
-  display: grid;
-  grid-template-columns: auto auto;
-  row-gap: 1rem;
-  column-gap: 3rem;
-  margin-top: 2rem;
   width: 100%;
 }
 
-label {
+.form-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.form-table td {
+  padding: 0.5rem;
+  vertical-align: top;
+}
+
+.form-table label {
   font-weight: bold;
+  color: var(--main-color);
 }
 
-.character-amount-container {
-  display: flex;
+.form-table small {
+  display: block;
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 0.25rem;
 }
 
-.number-input {
-  width: 2.5rem;
+.number-input,
+.form-table input[type="text"],
+.form-table input[type="checkbox"] {
+  width: 100%;
+  padding: 0.5rem;
+  font-family: var(--main-font);
+  background-color: #222;
+  color: var(--main-color);
+  border: 1px solid var(--main-color);
+  border-radius: 0.25rem;
 }
 
 .password-display {
   background-color: #000;
   color: var(--main-color);
   padding: 1rem;
-  height: auto; /* changed from fixed height */
-  width: calc(100% - (1rem * 2)); /* subtracted padding from width */
-
-  /* added overflow-wrap property */
+  height: auto;
+  width: calc(100% - (1rem * 2));
   overflow-wrap: anywhere;
   display: flex;
   justify-content: center;
   align-items: center;
   word-break: normal;
   border-radius: 0.5rem;
-  font-size: 0.8rem; /* changed from fixed font size */
-  letter-spacing: 0.5px; /* changed from fixed letter spacing */
-  text-shadow: 0.5px 0.5px var(--main-color); /* changed from fixed text shadow */
-
-  /* added position relative for pseudo-element */
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  text-shadow: 0.5px 0.5px var(--main-color);
   position: relative;
+  margin-bottom: 1.5rem;
 }
 
-/* added pseudo-element for copy button */
 .password-display::after {
   content: "Copy";
   position: absolute;
   right: 0.5rem;
   top: 0.5rem;
-  bottom: 0.5rem;
-  width: auto;
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   background-color: #000;
@@ -93,70 +107,39 @@ label {
   transition: 0.3s ease;
 }
 
-/* added hover effect for copy button */
-.password-display:hover::after {
-  background-color: #fff;
-  color: #000;
-}
-
 .btn {
-  /* added variables for colors and fonts */
   background-color: #000;
   border: 0.1rem solid var(--main-color);
   color: var(--main-color);
-  padding: 0.5rem 0.75rem;
+  padding: 0.75rem 1rem;
   cursor: pointer;
   font-family: var(--main-font);
-  font-size: 0.75rem; /* changed from fixed font size */
-  border-radius: 0.25rem; /* changed from fixed border radius */
-  text-transform: none; /* removed uppercase transformation */
-  letter-spacing: normal; /* removed letter spacing */
-  text-shadow: 0.25px 0.25px var(--main-color); /* changed from fixed text shadow */
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  text-transform: none;
+  letter-spacing: normal;
+  text-shadow: 0.5px 0.5px var(--main-color);
   transition: 0.3s ease;
-  grid-column: 1 / -1;
-  margin: 0 auto;
+  width: 100%;
+  margin-top: 1rem;
 }
 
 .btn:hover {
-  /* added hover effect for button */
   background-color: #fff;
   color: #000;
 }
 
 @media only screen and (max-width: 768px) {
   .container {
-    padding: 2rem;
+    padding: 1.5rem;
   }
 
   .title {
     font-size: 1.5rem;
   }
 
-  .form {
-    grid-template-columns: 1fr;
-  }
-
-  .btn {
-    grid-column: 1 / -1;
-  }
-
-  /* added media query for password display font size */
   .password-display {
-    font-size: 0.6rem;
-  }
-}
-
-@keyframes blinking {
-  0% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
+    font-size: 0.8rem;
   }
 }
 
@@ -164,7 +147,18 @@ label {
   animation: blinking 1s infinite;
 }
 
-/* added hover effects for checkboxes and range input */
+@keyframes blinking {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 input[type="checkbox"]:hover,
 input[type="range"]:hover {
   border-color: var(--main-color);
